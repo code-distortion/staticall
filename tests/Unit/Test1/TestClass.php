@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeDistortion\Staticall\Tests\Unit;
+namespace CodeDistortion\Staticall\Tests\Unit\Test1;
 
 use CodeDistortion\Staticall\Staticall;
 
@@ -21,7 +21,7 @@ class TestClass
 
 
     /**
-     * A method that accepts no parameters. Returns a string.
+     * A test method that doesn't accept any parameters.
      *
      * @return string
      */
@@ -31,7 +31,7 @@ class TestClass
     }
 
     /**
-     * A method that accepts a string, and returns another based upon it.
+     * A test method that accepts 1 parameter.
      *
      * @param string $string1 The first string.
      * @return string
@@ -42,7 +42,7 @@ class TestClass
     }
 
     /**
-     * A method that accepts some strings, and returns another based upon them.
+     * A test method that accepts 2 parameters.
      *
      * @param string $string1 The first string.
      * @param string $string2 The second string.

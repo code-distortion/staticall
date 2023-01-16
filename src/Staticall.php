@@ -11,11 +11,11 @@ use BadMethodCallException;
  */
 trait Staticall
 {
-    /** @var string The prefix to use when looking for methods to call. */
-#    protected static $staticallPrefix = 'call';
+//    /** @var string The prefix to use when looking for methods to call. */
+//    protected static $staticallPrefix = 'call';
 
     /**
-     * Allow for "call*" methods to be called NOT-STATICALLY.
+     * Allow for "call*" methods to be called NON-STATICALLY.
      *
      * @param string  $method     The method to call.
      * @param mixed[] $parameters The parameters to pass.
@@ -24,13 +24,28 @@ trait Staticall
      */
     public function __call(string $method, array $parameters)
     {
-        $prefix = static::$staticallPrefix ?? 'call';
-        if (method_exists(self::class, "$prefix$method")) {
+        // find out which methods are callable *from this class*
+        $methods = [];
+        foreach (get_class_methods(self::class) as $tempMethod) {
+            $methods[] = strtolower($tempMethod);
+        }
+
+        // attempt the call
+        $prefix = self::$staticallPrefix ?? 'call';
+        if (in_array(strtolower("$prefix$method"), $methods)) {
             $toCall = [$this, "$prefix$method"];
             return is_callable($toCall)
                 ? call_user_func_array($toCall, $parameters)
                 : null;
         }
+
+        // parent::class will work, even if the direct parent doesn't have one (but one higher up does)
+        if (count(class_parents(self::class))) {
+            if (method_exists(parent::class, '__call')) {
+                return parent::__call($method, $parameters);
+            }
+        }
+
         throw new BadMethodCallException("Method \"$method\" does not exist in class " . __CLASS__);
     }
 
@@ -44,13 +59,28 @@ trait Staticall
      */
     public static function __callStatic(string $method, array $parameters)
     {
-        $prefix = static::$staticallPrefix ?? 'call';
-        if (method_exists(self::class, "$prefix$method")) {
+        // find out which methods are callable *from this class*
+        $methods = [];
+        foreach (get_class_methods(self::class) as $tempMethod) {
+            $methods[] = strtolower($tempMethod);
+        }
+
+        // attempt the call
+        $prefix = self::$staticallPrefix ?? 'call';
+        if (in_array(strtolower("$prefix$method"), $methods)) {
             $toCall = [new self(), "$prefix$method"];
             return is_callable($toCall)
                 ? call_user_func_array($toCall, $parameters)
                 : null;
         }
-        throw new BadMethodCallException("Method \"$method\" does not exist " . __CLASS__);
+
+        // loop through each parent until __callStatic is found, or the parents list has been exhausted
+        foreach (class_parents(self::class) as $class) {
+            if (method_exists($class, '__callStatic')) {
+                return parent::__callStatic($method, $parameters);
+            }
+        }
+
+        throw new BadMethodCallException("Method \"$method\" does not exist in class " . __CLASS__);
     }
 }

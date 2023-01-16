@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 
 
+## [0.0.2] - 2023-01-17
+
+### Added
+- Added support for classes with parents, which might also use Staticall
+
+
+
 ## [0.0.1] - 2023-01-16
 
 ### Added

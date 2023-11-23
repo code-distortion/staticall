@@ -1,6 +1,10 @@
-build
-composer.lock
-vendor
+.idea/
+build/
+infection/
+phpunit.cache/
+vendor/
 .phpunit.result.cache
-.idea
+composer.lock
+infection.json5
+tests/Unit/ManualTest.php
 todo.txt

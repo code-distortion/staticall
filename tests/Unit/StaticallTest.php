@@ -4,7 +4,7 @@ namespace CodeDistortion\Staticall\Tests\Unit;
 
 use BadMethodCallException;
 use CodeDistortion\Staticall\Tests\PHPUnitTestCase;
-use CodeDistortion\Staticall\Tests\Unit\Test1\TestClass;
+use CodeDistortion\Staticall\Tests\Unit\Test1\TestClass1;
 use CodeDistortion\Staticall\Tests\Unit\Test1\TestClass2;
 use CodeDistortion\Staticall\Tests\Unit\Test2\BottomClass;
 use CodeDistortion\Staticall\Tests\Unit\Test2\TopClass;
@@ -22,25 +22,31 @@ class StaticallTest extends PHPUnitTestCase
      * @test
      * @return void
      */
-    public function test_method_calls()
+    public static function test_method_calls()
     {
-        $this->assertSame('callNoParams', TestClass::noParams());
-        $this->assertSame('callWithParam one', TestClass::withParam('one'));
-        $this->assertSame('callWithParams one two', TestClass::withParams('one', 'two'));
+        self::assertSame('TestClass1 callNoParams', TestClass1::noParams());
+        self::assertSame('TestClass1 callWithParam one', TestClass1::withParam('one'));
+        self::assertSame('TestClass1 callWithParams one two', TestClass1::withParams('one', 'two'));
+        self::assertSame('TestClass1 onlyInTestClass1', TestClass1::onlyInTestClass1());
 
-        $test = new TestClass();
-        $this->assertSame('callNoParams', $test->noParams());
-        $this->assertSame('callWithParam one', $test->withParam('one'));
-        $this->assertSame('callWithParams one two', $test->withParams('one', 'two'));
+        $test = new TestClass1();
+        self::assertSame('TestClass1 callNoParams', $test->noParams());
+        self::assertSame('TestClass1 callWithParam one', $test->withParam('one'));
+        self::assertSame('TestClass1 callWithParams one two', $test->withParams('one', 'two'));
+        self::assertSame('TestClass1 onlyInTestClass1', $test->onlyInTestClass1());
 
-        $this->assertSame('callNoParams', TestClass2::noParams());
-        $this->assertSame('callWithParam one', TestClass2::withParam('one'));
-        $this->assertSame('callWithParams one two', TestClass2::withParams('one', 'two'));
+        self::assertSame('TestClass2 callNoParams', TestClass2::noParams());
+        self::assertSame('TestClass2 callWithParam one', TestClass2::withParam('one'));
+        self::assertSame('TestClass2 callWithParams one two', TestClass2::withParams('one', 'two'));
+        self::assertSame('TestClass1 onlyInTestClass1', TestClass2::onlyInTestClass1());
+        self::assertSame('TestClass2 onlyInTestClass2', TestClass2::onlyInTestClass2());
 
         $test = new TestClass2();
-        $this->assertSame('callNoParams', $test->noParams());
-        $this->assertSame('callWithParam one', $test->withParam('one'));
-        $this->assertSame('callWithParams one two', $test->withParams('one', 'two'));
+        self::assertSame('TestClass2 callNoParams', $test->noParams());
+        self::assertSame('TestClass2 callWithParam one', $test->withParam('one'));
+        self::assertSame('TestClass2 callWithParams one two', $test->withParams('one', 'two'));
+        self::assertSame('TestClass1 onlyInTestClass1', $test->onlyInTestClass1());
+        self::assertSame('TestClass2 onlyInTestClass2', $test->onlyInTestClass2());
     }
 
     /**
@@ -49,15 +55,15 @@ class StaticallTest extends PHPUnitTestCase
      * @test
      * @return void
      */
-    public function test_with_parents()
+    public static function test_with_parents()
     {
         // statically
-        $this->assertSame('existingMethodTop-', BottomClass::existingMethodTop());
-        $this->assertSame('existingMethodBottom-', BottomClass::existingMethodBottom());
+        self::assertSame('existingMethodTop-', BottomClass::existingMethodTop());
+        self::assertSame('existingMethodBottom-', BottomClass::existingMethodBottom());
 
 
 
-        $this->assertSame('existingMethodTop-', TopClass::existingMethodTop());
+        self::assertSame('existingMethodTop-', TopClass::existingMethodTop());
 
 
 
@@ -67,7 +73,7 @@ class StaticallTest extends PHPUnitTestCase
         } catch (BadMethodCallException $e) {
             $exceptionWasThrown = true;
         }
-        $this->assertTrue($exceptionWasThrown);
+        self::assertTrue($exceptionWasThrown);
 
 
 
@@ -77,21 +83,21 @@ class StaticallTest extends PHPUnitTestCase
         } catch (BadMethodCallException $e) {
             $exceptionWasThrown = true;
         }
-        $this->assertTrue($exceptionWasThrown);
+        self::assertTrue($exceptionWasThrown);
 
 
 
         // non-statically
         $test = new BottomClass();
         $test->setValue('abc');
-        $this->assertSame('existingMethodTop-abc', $test->existingMethodTop());
-        $this->assertSame('existingMethodBottom-abc', $test->existingMethodBottom());
+        self::assertSame('existingMethodTop-abc', $test->existingMethodTop());
+        self::assertSame('existingMethodBottom-abc', $test->existingMethodBottom());
 
 
 
         $test = new TopClass();
         $test->setValue('abc');
-        $this->assertSame('existingMethodTop-abc', $test->existingMethodTop());
+        self::assertSame('existingMethodTop-abc', $test->existingMethodTop());
 
 
 
@@ -102,7 +108,7 @@ class StaticallTest extends PHPUnitTestCase
         } catch (BadMethodCallException $e) {
             $exceptionWasThrown = true;
         }
-        $this->assertTrue($exceptionWasThrown);
+        self::assertTrue($exceptionWasThrown);
 
 
 
@@ -113,6 +119,6 @@ class StaticallTest extends PHPUnitTestCase
         } catch (BadMethodCallException $e) {
             $exceptionWasThrown = true;
         }
-        $this->assertTrue($exceptionWasThrown);
+        self::assertTrue($exceptionWasThrown);
     }
 }

@@ -7,8 +7,12 @@ use CodeDistortion\Staticall\Staticall;
 /**
  * A test-class that uses Staticall.
  *
+ * @codingStandardsIgnoreStart
+ *
  * @method static string existingMethodTop() A test method.
  * @method string existingMethodTop() A test method.
+ *
+ * @codingStandardsIgnoreEnd
  */
 class TopClass
 {

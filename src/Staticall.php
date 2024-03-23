@@ -12,10 +12,10 @@ use BadMethodCallException;
 trait Staticall
 {
 //    /** @var string The prefix to use when looking for methods to call. */
-//    protected static string $staticallPrefix = 'call';
+//    protected static string $staticallPrefix = 'staticall';
 
     /**
-     * Allow for "call*" methods to be called NON-STATICALLY.
+     * Allow for "staticall*" methods to be called NON-STATICALLY.
      *
      * @param string  $method     The method to call.
      * @param mixed[] $parameters The parameters to pass.
@@ -31,7 +31,7 @@ trait Staticall
         }
 
         // attempt the call
-        $prefix = self::$staticallPrefix ?? 'call';
+        $prefix = self::$staticallPrefix ?? 'staticall';
         if (in_array(strtolower("$prefix$method"), $methods)) {
             $toCall = [$this, "$prefix$method"];
             return is_callable($toCall)
@@ -50,7 +50,7 @@ trait Staticall
     }
 
     /**
-     * Allow for "call*" methods to be called STATICALLY.
+     * Allow for "staticall*" methods to be called STATICALLY.
      *
      * @param string  $method     The method to call.
      * @param mixed[] $parameters The parameters to pass.
@@ -66,7 +66,7 @@ trait Staticall
         }
 
         // attempt the call
-        $prefix = self::$staticallPrefix ?? 'call';
+        $prefix = self::$staticallPrefix ?? 'staticall';
         if (in_array(strtolower("$prefix$method"), $methods)) {
             $toCall = [new self(), "$prefix$method"];
             return is_callable($toCall)

@@ -40,7 +40,7 @@ class TopClass
      *
      * @return string
      */
-    private function callExistingMethodTop(): string
+    private function staticallExistingMethodTop(): string
     {
         return "existingMethodTop-$this->value";
     }

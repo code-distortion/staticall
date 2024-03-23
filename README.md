@@ -23,18 +23,18 @@ composer require code-distortion/staticall
 ## Usage
 
 - Include the `Staticall` trait in your class
-- Add methods to your class, with the prefix `call`
+- Add methods to your class, with the prefix `staticall`
 
 ``` php
 <?php
 
-use CodeDistortion\Staticall\Staticall;
+use CodeDistortion\Staticall\Staticall; // <<<
 
 class MyClass
 {
-    use Staticall;
+    use Staticall; // <<<
 
-    private function callMyMethod(): string
+    private function staticallMyMethod(): string // <<<
     {
         return 'hello';
     }
@@ -50,18 +50,18 @@ $myObject->myMethod(); // "hello"
 
 When a method is called statically like this, Staticall will instantiate the class first, and call the method against that.
 
-This is useful for classes that have optional methods for chaining. Any of the methods can be called first.
+This is useful for classes that have optional methods for chaining and any of the methods can be called first.
 
 ``` php
-MyClass::recipient('Bob', 'bob@test.com')->send();
-MyClass::attach('file.zip')->recipient('Bob', 'bob@test.com')->send();
+MyEmail::recipient('Bob', 'bob@test.com')->send();
+MyEmail::attach('file.zip')->recipient('Bob', 'bob@test.com')->send();
 ```
 
-***Note:*** The constructor of your class must not accept any parameters.
+> ***Note:*** Because Staticall calls your constructor automatically, the constructor must not have any required parameters.
 
-***Note:*** Staticall makes the methods it finds, publicly accessible.
+>***Note:*** Staticall makes the methods it finds accessible publicly.
 
-Your can change the method prefix by adding static property $staticallPrefix to your class.
+You can change the method prefix by adding static property `$staticallPrefix` to your class:
 
 ``` php
 <?php
@@ -72,9 +72,9 @@ class MyClass
 {
     use Staticall;
 
-    protected static string $staticallPrefix = 'xyz';
+    protected static string $staticallPrefix = 'xyz'; // <<<
 
-    private function xyzMyMethod(): string
+    private function xyzMyMethod(): string // <<<
     {
         return 'hello';
     }

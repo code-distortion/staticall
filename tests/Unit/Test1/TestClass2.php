@@ -67,7 +67,7 @@ class TestClass2 extends TestClass1
      *
      * @return string
      */
-    private function xyzonlyInTestClass2(): string
+    private function xyzOnlyInTestClass2(): string
     {
         return "TestClass2 onlyInTestClass2";
     }

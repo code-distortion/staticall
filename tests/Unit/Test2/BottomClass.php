@@ -23,7 +23,7 @@ class BottomClass extends MiddleClass
      *
      * @return string
      */
-    private function callExistingMethodBottom(): string
+    private function staticallExistingMethodBottom(): string
     {
         return "existingMethodBottom-$this->value";
     }

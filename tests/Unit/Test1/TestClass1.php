@@ -31,7 +31,7 @@ class TestClass1
      *
      * @return string
      */
-    private function callNoParams(): string
+    private function staticallNoParams(): string
     {
         return 'TestClass1 callNoParams';
     }
@@ -42,7 +42,7 @@ class TestClass1
      * @param string $string1 The first string.
      * @return string
      */
-    private function callWithParam(string $string1): string
+    private function staticallWithParam(string $string1): string
     {
         return "TestClass1 callWithParam $string1";
     }
@@ -54,7 +54,7 @@ class TestClass1
      * @param string $string2 The second string.
      * @return string
      */
-    private function callWithParams(string $string1, string $string2): string
+    private function staticallWithParams(string $string1, string $string2): string
     {
         return "TestClass1 callWithParams $string1 $string2";
     }
@@ -64,7 +64,7 @@ class TestClass1
      *
      * @return string
      */
-    private function callOnlyInTestClass1(): string
+    private function staticallOnlyInTestClass1(): string
     {
         return "TestClass1 onlyInTestClass1";
     }

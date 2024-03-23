@@ -121,4 +121,16 @@ class StaticallTest extends PHPUnitTestCase
         }
         self::assertTrue($exceptionWasThrown);
     }
+
+    /**
+     * Test that case of method names doesn't matter.
+     *
+     * @test
+     * @return void
+     */
+    public static function test_method_name_case()
+    {
+        self::assertSame('TestClass1 callNoParams', TestClass1::NOPARAMS());
+        self::assertSame('TestClass1 callWithParam one', TestClass1::withparam('one'));
+    }
 }

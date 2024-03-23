@@ -12,7 +12,7 @@ use BadMethodCallException;
 trait Staticall
 {
 //    /** @var string The prefix to use when looking for methods to call. */
-//    protected string $staticallPrefix = 'call';
+//    protected static string $staticallPrefix = 'call';
 
     /**
      * Allow for "call*" methods to be called NON-STATICALLY.

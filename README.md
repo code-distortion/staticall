@@ -71,8 +71,8 @@ use CodeDistortion\Staticall\Staticall;
 class MyClass
 {
     use Staticall;
-    
-    protected static $staticallPrefix = 'xyz';
+
+    protected static string $staticallPrefix = 'xyz';
 
     private function xyzMyMethod(): string
     {

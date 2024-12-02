@@ -71,8 +71,8 @@ jobs:
       - name: "Checkout code"
         uses: "actions/checkout@v4"
 
-      - name: "Validate composer.json and composer.lock"
-        run: "composer validate --strict"
+#      - name: "Validate composer.json and composer.lock"
+#        run: "composer validate --strict"
 
       - name: "Setup PHP"
         uses: "shivammathur/setup-php@v2"

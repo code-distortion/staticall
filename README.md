@@ -44,6 +44,8 @@ class MyClass
 ``` php
 MyClass::myMethod(); // "hello"
 
+// is equivalent to
+
 $myObject = new MyClass();
 $myObject->myMethod(); // "hello"
 ```
@@ -61,7 +63,7 @@ MyEmail::attach('file.zip')->recipient('Bob', 'bob@test.com')->send();
 
 >***Note:*** Staticall makes the methods it finds accessible publicly.
 
-You can change the method prefix by adding static property `$staticallPrefix` to your class:
+You can change the prefix Staticall uses by adding static property `$staticallPrefix` to your class:
 
 ``` php
 <?php

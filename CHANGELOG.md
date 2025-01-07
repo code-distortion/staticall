@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 
 
+## [0.3.0] - 2025-01-07
+
+### Changed
+- Removed the `$staticallPrefix` property
+- The method prefix is now always `staticall`
+
+### Added
+- Added support for PHP 8.4
+- Now includes the called class-name in `BadMethodCallException` instead of the top-most parent's
+- Added better tests
+
+
+
 ## [0.2.0] - 2024-03-23
 
 ### Changed

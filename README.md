@@ -1,10 +1,10 @@
 # Staticall
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/code-distortion/staticall.svg?style=flat-square)](https://packagist.org/packages/code-distortion/staticall)
-![PHP Version](https://img.shields.io/badge/PHP-7.0%20to%208.3-blue?style=flat-square)
+![PHP Version](https://img.shields.io/badge/PHP-7.0%20to%208.4-blue?style=flat-square)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/code-distortion/staticall/run-tests.yml?branch=master&style=flat-square)](https://github.com/code-distortion/staticall/actions)
 [![Buy The World a Tree](https://img.shields.io/badge/treeware-%F0%9F%8C%B3-lightgreen?style=flat-square)](https://plant.treeware.earth/code-distortion/staticall)
-[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v2.0%20adopted-ff69b4.svg?style=flat-square)](CODE_OF_CONDUCT.md)
+[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v2.1%20adopted-ff69b4.svg?style=flat-square)](.github/CODE_OF_CONDUCT.md)
 
 ***code-distortion/staticall*** is a package for that lets you call methods statically and non-statically.
 
@@ -14,7 +14,7 @@
 
 Install the package via composer:
 
-``` bash
+```bash
 composer require code-distortion/staticall
 ```
 
@@ -25,7 +25,7 @@ composer require code-distortion/staticall
 - Include the `Staticall` trait in your class
 - Add methods to your class, with the prefix `staticall`
 
-``` php
+```php
 <?php
 
 use CodeDistortion\Staticall\Staticall; // <<<
@@ -41,7 +41,7 @@ class MyClass
 }
 ```
 
-``` php
+```php
 MyClass::myMethod(); // "hello"
 
 // is equivalent to
@@ -52,20 +52,20 @@ $myObject->myMethod(); // "hello"
 
 When a method is called statically like this, Staticall will instantiate the class first, and call the method against that.
 
-This is useful for classes that have optional methods for chaining and any of the methods can be called first.
+This is useful for classes that have optional methods for chaining and any of the methods can be called first. e.g.
 
-``` php
+```php
 MyEmail::recipient('Bob', 'bob@test.com')->send();
 MyEmail::attach('file.zip')->recipient('Bob', 'bob@test.com')->send();
 ```
 
 > ***Note:*** Because Staticall calls your constructor automatically, the constructor must not have any required parameters.
 
->***Note:*** Staticall makes the methods it finds accessible publicly.
+>***Note:*** Staticall makes the methods it finds accessible *publicly*.
 
 You can change the prefix Staticall uses by adding static property `$staticallPrefix` to your class:
 
-``` php
+```php
 <?php
 
 use CodeDistortion\Staticall\Staticall;

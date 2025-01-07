@@ -4,10 +4,6 @@ namespace CodeDistortion\Staticall\Tests\Unit;
 
 use BadMethodCallException;
 use CodeDistortion\Staticall\Tests\PHPUnitTestCase;
-use CodeDistortion\Staticall\Tests\Unit\Support\IntegerPrefix;
-use CodeDistortion\Staticall\Tests\Unit\Support\StaticPrefix;
-use CodeDistortion\Staticall\Tests\Unit\Support\NonStaticPrefix;
-use CodeDistortion\Staticall\Tests\Unit\Support\StringPrefix;
 use CodeDistortion\Staticall\Tests\Unit\Support\TestClass1;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -163,7 +159,7 @@ class StaticallUnitTest extends PHPUnitTestCase
      * @return void
      */
     #[Test]
-    public static function test_hen_a_new_instance_is_created()
+    public static function test_when_a_new_instance_is_created()
     {
         // static call - instantiates a new instance
         self::assertSame('testClass1GetCallInfo (unchanged) ()', TestClass1::testClass1GetCallInfo());
@@ -172,96 +168,6 @@ class StaticallUnitTest extends PHPUnitTestCase
         $test = new TestClass1();
         $test->setValue('changed');
         self::assertSame('testClass1GetCallInfo (changed) ()', $test->testClass1GetCallInfo());
-    }
-
-    /**
-     * Test that the default $staticallPrefix is 'staticall'.
-     *
-     * @test
-     *
-     * @return void
-     */
-    #[Test]
-    public static function test_the_default_staticall_method_name_prefix()
-    {
-        // static call - instantiates a new instance
-        // "staticall" (default)
-        self::assertSame('testClass4GetCallInfo (unchanged) ()', TestClass1::testClass4GetCallInfo());
-
-        // non-static call - doesn't instantiate a new instance (it re-uses the current instance)
-        $test = new TestClass1();
-        // "staticall" (default)
-        self::assertSame('testClass4GetCallInfo (unchanged) ()', $test->testClass4GetCallInfo());
-    }
-
-    /**
-     * Test that the $staticallPrefix is relative to the class it's used in.
-     *
-     * @test
-     *
-     * @return void
-     */
-    #[Test]
-    public static function test_that_the_staticall_method_prefix_is_relative_to_the_class()
-    {
-        // static call
-        // "staticall1"
-        self::assertSame('testClass1GetCallInfo (unchanged) ()', TestClass1::testClass1GetCallInfo());
-        // "staticall3"
-        self::assertSame('testClass3GetCallInfo (unchanged) ()', TestClass1::testClass3GetCallInfo());
-        // "staticall" (default)
-        self::assertSame('testClass4GetCallInfo (unchanged) ()', TestClass1::testClass4GetCallInfo());
-
-        // non-static call
-        $test = new TestClass1();
-        // "staticall1"
-        self::assertSame('testClass1GetCallInfo (unchanged) ()', $test->testClass1GetCallInfo());
-        // "staticall3"
-        self::assertSame('testClass3GetCallInfo (unchanged) ()', $test->testClass3GetCallInfo());
-        // "staticall" (default)
-        self::assertSame('testClass4GetCallInfo (unchanged) ()', $test->testClass4GetCallInfo());
-    }
-
-    /**
-     * Test that the $staticallPrefix can be either static or non-static.
-     *
-     * @test
-     *
-     * @return void
-     */
-    #[Test]
-    public static function test_that_the_staticall_method_prefix_can_be_static_or_non_static()
-    {
-        // static call
-        self::assertSame('testMethod', StaticPrefix::testMethod());
-        self::assertSame('testMethod', NonStaticPrefix::testMethod());
-
-        // non-static call
-        $test = new StaticPrefix();
-        self::assertSame('testMethod', $test->testMethod());
-        $test = new NonStaticPrefix();
-        self::assertSame('testMethod', $test->testMethod());
-    }
-
-    /**
-     * Test that non-string $staticallPrefix values are ignored.
-     *
-     * @test
-     *
-     * @return void
-     */
-    #[Test]
-    public static function test_that_the_staticall_method_prefix_must_be_a_string()
-    {
-        // static call
-        self::assertSame('prefix "staticallStringPrefix"', StringPrefix::testMethod());
-        self::assertSame('prefix "staticall"', IntegerPrefix::testMethod()); // the prefix is ignored
-
-        // non-static call
-        $test = new StringPrefix();
-        self::assertSame('prefix "staticallStringPrefix"', $test->testMethod());
-        $test = new IntegerPrefix();
-        self::assertSame('prefix "staticall"', $test->testMethod()); // the prefix is ignored
     }
 
     /**

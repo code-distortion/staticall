@@ -26,17 +26,12 @@ class TestClass1 extends TestClass2
 
 
 
-    /** @var string The prefix to use when looking for methods to call. */
-    protected static $staticallPrefix = 'staticall1';
-
-
-
     /**
      * A method that returns a string.
      *
      * @return string
      */
-    private function staticall1TestClass1GetCallInfo(string $param1 = '', string $param2 = ''): string
+    private function staticallTestClass1GetCallInfo(string $param1 = '', string $param2 = ''): string
     {
         $parts = [
             'testClass1GetCallInfo',
@@ -54,7 +49,7 @@ class TestClass1 extends TestClass2
      *
      * @return string
      */
-    private function staticall1TestClass1PublicMethod(): string
+    private function staticallTestClass1PublicMethod(): string
     {
         return 'public';
     }
@@ -64,7 +59,7 @@ class TestClass1 extends TestClass2
      *
      * @return string
      */
-    private function staticall1TestClass1ProtectedMethod(): string
+    private function staticallTestClass1ProtectedMethod(): string
     {
         return 'protected';
     }
@@ -74,7 +69,7 @@ class TestClass1 extends TestClass2
      *
      * @return string
      */
-    private function staticall1TestClass1PrivateMethod(): string
+    private function staticallTestClass1PrivateMethod(): string
     {
         return 'private';
     }

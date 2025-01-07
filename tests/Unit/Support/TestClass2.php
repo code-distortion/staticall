@@ -2,7 +2,7 @@
 
 namespace CodeDistortion\Staticall\Tests\Unit\Support;
 
-use CodeDistortion\Staticall\Staticall;
+//use CodeDistortion\Staticall\Staticall;
 
 /**
  * A test-class that DOESN'T use Staticall.
@@ -20,17 +20,12 @@ class TestClass2 extends TestClass3
 
 
 
-    /** @var string The prefix to use when looking for methods to call. */
-    protected static $staticallPrefix = 'staticall2';
-
-
-
     /**
      * A method that returns a string.
      *
      * @return string
      */
-    private function staticall2TestClass2GetCallInfo(string $param1 = '', string $param2 = ''): string
+    private function staticallTestClass2GetCallInfo(string $param1 = '', string $param2 = ''): string
     {
         $parts = [
             'testClass2GetCallInfo',

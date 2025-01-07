@@ -22,17 +22,12 @@ class TestClass3 extends TestClass4
 
 
 
-    /** @var string The prefix to use when looking for methods to call. */
-    protected static $staticallPrefix = 'staticall3';
-
-
-
     /**
      * A method that returns a string.
      *
      * @return string
      */
-    private function staticall3TestClass3GetCallInfo(string $param1 = '', string $param2 = ''): string
+    private function staticallTestClass3GetCallInfo(string $param1 = '', string $param2 = ''): string
     {
         $parts = [
             'testClass3GetCallInfo',
@@ -48,7 +43,7 @@ class TestClass3 extends TestClass4
      *
      * @return string
      */
-    private function staticall3SharedMethod(): string
+    private function staticallSharedMethod(): string
     {
         return 'testClass3SharedMethod';
     }

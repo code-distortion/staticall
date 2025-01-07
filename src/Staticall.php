@@ -24,18 +24,12 @@ trait Staticall
      */
     public function __call(string $method, array $parameters)
     {
-        // resolve the method prefix
-        $prefix = get_class_vars(self::class)['staticallPrefix'] ?? 'staticall';
-        if (!is_string($prefix)) {
-            $prefix = 'staticall';
-        }
-
         // find the methods that exist *in THIS class*
         $methods = array_map('strtolower', get_class_methods(self::class));
 
         // attempt the call
-        if (in_array(strtolower("$prefix$method"), $methods, true)) {
-            $callable = [$this, "$prefix$method"];
+        if (in_array(strtolower("staticall$method"), $methods, true)) {
+            $callable = [$this, "staticall$method"];
             if (is_callable($callable)) {
                 return call_user_func_array($callable, $parameters);
             }
@@ -61,18 +55,12 @@ trait Staticall
      */
     public static function __callStatic(string $method, array $parameters)
     {
-        // resolve the method prefix
-        $prefix = get_class_vars(self::class)['staticallPrefix'] ?? 'staticall';
-        if (!is_string($prefix)) {
-            $prefix = 'staticall';
-        }
-
         // find the methods that exist *in THIS class*
         $methods = array_map('strtolower', get_class_methods(self::class));
 
         // attempt the call
-        if (in_array(strtolower("$prefix$method"), $methods, true)) {
-            $callable = [new self(), "$prefix$method"];
+        if (in_array(strtolower("staticall$method"), $methods, true)) {
+            $callable = [new self(), "staticall$method"];
             if (is_callable($callable)) {
                 return call_user_func_array($callable, $parameters);
             }

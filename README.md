@@ -63,26 +63,6 @@ MyEmail::attach('file.zip')->recipient('Bob', 'bob@test.com')->send();
 
 >***Note:*** Staticall makes the methods it finds accessible *publicly*.
 
-You can change the prefix Staticall uses by adding static property `$staticallPrefix` to your class:
-
-```php
-<?php
-
-use CodeDistortion\Staticall\Staticall;
-
-class MyClass
-{
-    use Staticall;
-
-    protected static string $staticallPrefix = 'xyz'; // <<<
-
-    private function xyzMyMethod(): string // <<<
-    {
-        return 'hello';
-    }
-}
-```
-
 
 
 ## Testing This Package

@@ -23,11 +23,9 @@ composer require code-distortion/staticall
 ## Usage
 
 - Include the `Staticall` trait in your class
-- Add methods to your class, with the prefix `staticall`
+- Add methods to your class with the prefix `staticall`
 
 ```php
-<?php
-
 use CodeDistortion\Staticall\Staticall; // <<<
 
 class MyClass
@@ -48,6 +46,8 @@ MyClass::myMethod(); // "hello"
 
 $myObject = new MyClass();
 $myObject->myMethod(); // "hello"
+
+// (both will work)
 ```
 
 When a method is called statically like this, Staticall will instantiate the class first, and call the method against that.
@@ -61,26 +61,35 @@ MyEmail::attach('file.zip')->recipient('Bob', 'bob@test.com')->send();
 
 > ***Note:*** Because Staticall calls your constructor automatically, the constructor must not have any required parameters.
 
->***Note:*** Staticall makes the methods it finds accessible *publicly*.
+> ***Note:*** Staticall makes the methods it finds accessible *publicly*.
 
-You can change the prefix Staticall uses by adding static property `$staticallPrefix` to your class:
+
+
+### Detecting Static Calls
+
+If you'd like to check if your method was called statically, call the `$this->staticallCallWasStatic()` method.
 
 ```php
-<?php
-
 use CodeDistortion\Staticall\Staticall;
 
 class MyClass
 {
     use Staticall;
 
-    protected static string $staticallPrefix = 'xyz'; // <<<
-
-    private function xyzMyMethod(): string // <<<
+    private function staticallMyMethod(): string
     {
-        return 'hello';
+        return $this->staticallCallWasStatic() // <<<
+            ? 'called statically'
+            : 'not called statically';
     }
 }
+```
+
+```php
+MyClass::myMethod();   // 'called statically'
+
+$myObject = new MyClass();
+$myObject->myMethod(); // 'not called statically'
 ```
 
 

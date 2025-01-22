@@ -23,6 +23,8 @@ class TestClass2 extends TestClass3
     /**
      * A method that returns a string.
      *
+     * @param string $param1 The first parameter.
+     * @param string $param2 The second parameter.
      * @return string
      */
     private function staticallTestClass2GetCallInfo(string $param1 = '', string $param2 = ''): string
@@ -30,7 +32,7 @@ class TestClass2 extends TestClass3
         $parts = [
             'testClass2GetCallInfo',
             "($this->value)",
-            "(" . implode(', ', func_get_args()). ")",
+            "(" . implode(', ', func_get_args()) . ")",
         ];
 
         return implode(' ', $parts);

@@ -11,8 +11,10 @@ use BadMethodCallException;
  */
 trait Staticall
 {
-//    /** @var string The prefix to use when looking for methods to call. */
-//    protected static string $staticallPrefix = 'staticall';
+    /** @var boolean|null A flag to indicate that the current "staticall*" method was called statically. */
+    private $staticallCallWasStatic = null;
+
+
 
     /**
      * Allow for "staticall*" methods to be called NON-STATICALLY.
@@ -31,11 +33,16 @@ trait Staticall
         if (in_array(strtolower("staticall$method"), $methods, true)) {
             $callable = [$this, "staticall$method"];
             if (is_callable($callable)) {
-                return call_user_func_array($callable, $parameters);
+
+                $this->staticallCallWasStatic = false;
+                $return = call_user_func_array($callable, $parameters);
+                $this->staticallCallWasStatic = null;
+                return $return;
             }
         }
 
-        // parent::class will work, even if the direct parent doesn't have one (but one higher up does)
+        // call the parent's __call() method
+        // parent::class will work, even if the direct parent doesn't have one (but a higher up one does)
         if (count(class_parents(self::class)) !== 0) {
             if (method_exists(parent::class, '__call')) {
                 return parent::__call($method, $parameters);
@@ -60,13 +67,17 @@ trait Staticall
 
         // attempt the call
         if (in_array(strtolower("staticall$method"), $methods, true)) {
-            $callable = [new self(), "staticall$method"];
+            $new = new self();
+            $callable = [$new, "staticall$method"];
             if (is_callable($callable)) {
-                return call_user_func_array($callable, $parameters);
+
+                $new->staticallCallWasStatic = true;
+                $return = call_user_func_array($callable, $parameters);
+                return $return;
             }
         }
 
-        // loop through each PARENT until __callStatic is found, or the parents list has been exhausted
+        // loop through each PARENT until __callStatic() is found, or the parent list has been exhausted
         foreach (class_parents(self::class) as $class) {
             if (method_exists($class, '__callStatic')) {
                 return parent::__callStatic($method, $parameters);
@@ -74,5 +85,17 @@ trait Staticall
         }
 
         throw new BadMethodCallException("Method \"$method\" does not exist in class " . static::class);
+    }
+
+
+
+    /**
+     * Check to see if the current "staticall*" method was called statically.
+     *
+     * @return boolean|null
+     */
+    private function staticallCallWasStatic()
+    {
+        return $this->staticallCallWasStatic;
     }
 }

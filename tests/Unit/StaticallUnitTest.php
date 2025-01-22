@@ -5,6 +5,9 @@ namespace CodeDistortion\Staticall\Tests\Unit;
 use BadMethodCallException;
 use CodeDistortion\Staticall\Tests\PHPUnitTestCase;
 use CodeDistortion\Staticall\Tests\Unit\Support\TestClass1;
+use CodeDistortion\Staticall\Tests\Unit\Support\TestClass2;
+use CodeDistortion\Staticall\Tests\Unit\Support\TestClass3;
+use CodeDistortion\Staticall\Tests\Unit\Support\TestClass4;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -45,7 +48,10 @@ class StaticallUnitTest extends PHPUnitTestCase
         // static call
         self::assertSame('testClass1GetCallInfo (unchanged) ()', TestClass1::testClass1GetCallInfo());
         self::assertSame('testClass1GetCallInfo (unchanged) (one)', TestClass1::testClass1GetCallInfo('one'));
-        self::assertSame('testClass1GetCallInfo (unchanged) (one, two)', TestClass1::testClass1GetCallInfo('one', 'two'));
+        self::assertSame(
+            'testClass1GetCallInfo (unchanged) (one, two)',
+            TestClass1::testClass1GetCallInfo('one', 'two')
+        );
 
         // non-static call
         $test = new TestClass1();
@@ -56,7 +62,10 @@ class StaticallUnitTest extends PHPUnitTestCase
         // method in a parent class - static call
         self::assertSame('testClass3GetCallInfo (unchanged) ()', TestClass1::testClass3GetCallInfo());
         self::assertSame('testClass3GetCallInfo (unchanged) (one)', TestClass1::testClass3GetCallInfo('one'));
-        self::assertSame('testClass3GetCallInfo (unchanged) (one, two)', TestClass1::testClass3GetCallInfo('one', 'two'));
+        self::assertSame(
+            'testClass3GetCallInfo (unchanged) (one, two)',
+            TestClass1::testClass3GetCallInfo('one', 'two')
+        );
 
         // method in a parent class - non-static call
         $test = new TestClass1();
@@ -83,7 +92,7 @@ class StaticallUnitTest extends PHPUnitTestCase
         $e = null;
         try {
             TestClass1::testClass2GetCallInfo();
-        } catch(BadMethodCallException $e) {
+        } catch (BadMethodCallException $e) {
         }
         self::assertInstanceOf(BadMethodCallException::class, $e);
 
@@ -100,7 +109,7 @@ class StaticallUnitTest extends PHPUnitTestCase
         $e = null;
         try {
             $test->testClass2GetCallInfo();
-        } catch(BadMethodCallException $e) {
+        } catch (BadMethodCallException $e) {
         }
         self::assertInstanceOf(BadMethodCallException::class, $e);
 
@@ -168,6 +177,29 @@ class StaticallUnitTest extends PHPUnitTestCase
         $test = new TestClass1();
         $test->setValue('changed');
         self::assertSame('testClass1GetCallInfo (changed) ()', $test->testClass1GetCallInfo());
+    }
+
+    /**
+     * Test that Staticall sets the $staticallCalledStatically property flag properly.
+     *
+     * @test
+     *
+     * @return void
+     */
+    #[Test]
+    public static function test_that_staticall_called_statically_flag_is_set()
+    {
+        self::assertSame(true, TestClass1::getStaticallCallWasStatic());
+        self::assertSame(true, TestClass4::getStaticallCallWasStatic());
+
+        $test = new TestClass1();
+        self::assertSame(null, $test->getStaticallCallWasStaticSeparately()); // started as null
+        self::assertSame(false, $test->getStaticallCallWasStatic());          // false while calling
+        self::assertSame(null, $test->getStaticallCallWasStaticSeparately()); // returned to null
+        $test = new TestClass4();
+        self::assertSame(null, $test->getStaticallCallWasStaticSeparately());
+        self::assertSame(false, $test->getStaticallCallWasStatic());
+        self::assertSame(null, $test->getStaticallCallWasStaticSeparately());
     }
 
     /**

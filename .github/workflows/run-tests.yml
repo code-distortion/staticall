@@ -8,15 +8,14 @@ on:
   schedule:
     - cron: "0 0 * * 0"
 
-permissions:
-  contents: "read"
-
 jobs:
 
   all_tests:
 
     name: "PHP${{ matrix.php }} ${{ matrix.os-title }} ${{ matrix.dependency-prefer-title }}"
     runs-on: "${{ matrix.os }}"
+    permissions:
+      contents: "read"
     strategy:
       fail-fast: true
       matrix:

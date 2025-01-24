@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CodeDistortion\Staticall\Tests\Unit\Support;
 
 use CodeDistortion\Staticall\Staticall;

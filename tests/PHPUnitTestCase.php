@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CodeDistortion\Staticall\Tests;
 
 // phpunit added namespacing to its classes in 6.0.0

@@ -3,6 +3,7 @@
 namespace CodeDistortion\Staticall\Tests\Unit;
 
 use BadMethodCallException;
+use CodeDistortion\Staticall\Exceptions\PassByReferenceException;
 use CodeDistortion\Staticall\Tests\PHPUnitTestCase;
 use CodeDistortion\Staticall\Tests\Unit\Support\TestClass1;
 use CodeDistortion\Staticall\Tests\Unit\Support\TestClass4;
@@ -273,6 +274,40 @@ class StaticallUnitTest extends PHPUnitTestCase
 
         // * the second value is not true because the second call is actually made non-statically, because of how
         // Staticall and PHP work (see the *Caveat* section in README.md)
+    }
+
+    /**
+     * Test that parameters can be passed by reference.
+     *
+     * @test
+     *
+     * @return void
+     */
+    #[Test]
+    public static function test_pass_by_reference()
+    {
+        // static call
+        $value = 1;
+        $caughtException = false;
+        try {
+            TestClass4::changeValuePassedByReference($value);
+        } catch (PassByReferenceException $e) {
+            $caughtException = true;
+        }
+        self::assertTrue($caughtException);
+        self::assertSame(1, $value); // i.e. no change
+
+        // non-static call
+        $value = 1;
+        $test = new TestClass4();
+        $caughtException = false;
+        try {
+            $test->changeValuePassedByReference($value);
+        } catch (PassByReferenceException $e) {
+            $caughtException = true;
+        }
+        self::assertTrue($caughtException);
+        self::assertSame(1, $value); // i.e. no change
     }
 
     /**

@@ -6,10 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 
 
-## [0.3.1] - 2025-01-23
+## [0.4.0] - 2025-01-25
+
+### Changed
+- Passing values by reference cannot be supported. A `PassByReferenceException` is now thrown when calling a `staticall*` method that expects a parameter to be passed-by-reference
 
 ### Added
-- Added the new `staticallCallWasStatic()` method. This can be used to determine if the method was called statically or not
+- Added a `staticallCallWasStatic()` method for `staticall*` methods to use to check if it was called statically or not
 
 
 

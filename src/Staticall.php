@@ -3,6 +3,8 @@
 namespace CodeDistortion\Staticall;
 
 use BadMethodCallException;
+use CodeDistortion\Staticall\Exceptions\PassByReferenceException;
+use ReflectionMethod;
 
 /**
  * Trait to allow class methods to be called statically or non-statically.
@@ -33,6 +35,19 @@ trait Staticall
         if (in_array(strtolower("staticall$method"), $methods, true)) {
             $callable = [$this, "staticall$method"];
             if (is_callable($callable)) {
+
+                // check to make sure that the method doesn't have any parameters passed by reference
+                // (as it can't presently be supported)
+                $refMethod = new ReflectionMethod(self::class, "staticall$method");
+                foreach ($refMethod->getParameters() as $param) {
+                    if ($param->isPassedByReference()) {
+                        throw PassByReferenceException::passByReferenceNotSupported(
+                            static::class,
+                            $method,
+                            $param->getName()
+                        );
+                    }
+                }
 
                 // set the flag to indicate that this method was called statically
                 $prev = $this->staticallMethodCallWasStatic;
@@ -78,6 +93,19 @@ trait Staticall
             $new = new self();
             $callable = [$new, "staticall$method"];
             if (is_callable($callable)) {
+
+                // check to make sure that the method doesn't have any parameters passed by reference
+                // (as it can't presently be supported)
+                $refMethod = new ReflectionMethod(self::class, "staticall$method");
+                foreach ($refMethod->getParameters() as $param) {
+                    if ($param->isPassedByReference()) {
+                        throw PassByReferenceException::passByReferenceNotSupported(
+                            static::class,
+                            $method,
+                            $param->getName()
+                        );
+                    }
+                }
 
                 // set the flag to indicate that this method was called statically
                 $new->staticallMethodCallWasStatic = true;

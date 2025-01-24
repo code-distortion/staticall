@@ -18,6 +18,8 @@ use Exception;
  * @method boolean|null getStaticallMethodCallWasStatic(bool $throwException = false) A method that returns Staticall's $this->staticallMethodCallWasStatic() value.
  * @method static boolean|null callNestedStaticallMethod(bool $recurseStatically, bool $throwException = false) A method that returns the current $this->staticallMethodCallWasStatic() value, along with the result from a nested call to another Staticall method.
  * @method boolean|null callNestedStaticallMethod(bool $recurseStatically, bool $throwException = false) A method that returns the current $this->staticallMethodCallWasStatic() value, along with the result from a nested call to another Staticall method.
+ * @method static void changeValuePassedByReference(int &$value) A method that changes the value passed by reference.
+ * @method void changeValuePassedByReference(int &$value) A method that changes the value passed by reference.
  *
  * @codingStandardsIgnoreEnd
  */
@@ -134,5 +136,20 @@ class TestClass4
                                                     // call
 
         return [$a, $b, $c];
+    }
+
+
+
+
+
+    /**
+     * A method that changes the value passed by reference.
+     *
+     * @param integer $value The value to change.
+     * @return void
+     */
+    private function staticallChangeValuePassedByReference(int &$value): void
+    {
+        $value++;
     }
 }

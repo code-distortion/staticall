@@ -96,9 +96,19 @@ $myObject->myMethod(); // 'not called statically'
 
 ### Caveats When Using Staticall
 
+#### Passing Parameters By Reference
+
+Staticall uses PHP's `__call()` and `__callStatic()` magic methods to intercept method calls, and subsequently call the correct method.
+
+Unfortunately PHP doesn't support the passing of parameters by reference in this way. This means that if you have a method that expects a parameter to be passed by reference, you won't be able to call it using Staticall.
+
+The [PHP RFC: Allow explicit call-site pass-by-reference annotation](https://wiki.php.net/rfc/explicit_send_by_ref) was proposed in 2017 to try to address this, but it has become inactive.
+
+
+
 #### Calling Nested Staticall Methods Statically
 
-Calling a method statically using Staticall is not quite the same as calling a true static method. The way you call it is the same, but behind the scenes it's a little different. Staticall instantiates a new instance of the class and calls the method non-statically. This means that the method is not actually running in a static context. If you call another Staticall method from within your method statically, it will actually be called non-statically.
+Calling a method statically using Staticall is not quite the same as calling a true static method. The way you call it is the same, but behind the scenes it's a little different. Staticall instantiates a new instance of the class and calls the method non-statically against that. This means that the method is not *actually* running in a static context. If you call another Staticall method from within your method statically, it will actually be called non-statically.
 
 ```php
 use CodeDistortion\Staticall\Staticall;
@@ -134,7 +144,7 @@ MyClass::myMethodA();
 //   'myMethodB' => 'called non-statically' ]
 ```
 
-To counteract this, you can proxy the call in another method in the same class that is actually static.
+To counteract this, you can proxy the call via another method in the same class that *is* actually static.
 
 
 

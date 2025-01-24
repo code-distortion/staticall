@@ -3,6 +3,7 @@
 namespace CodeDistortion\Staticall\Tests\Unit\Support;
 
 use CodeDistortion\Staticall\Staticall;
+use Exception;
 
 /**
  * A test-class that uses Staticall.
@@ -13,8 +14,10 @@ use CodeDistortion\Staticall\Staticall;
  * @method string testClass4GetCallInfo(string $param1 = '', string $param2 = '') A method that returns a string.
  * @method static string sharedMethod() A method that returns a string.
  * @method string sharedMethod() A method that returns a string.
- * @method static boolean|null getStaticallCallWasStatic() A method that returns the $staticallCallWasStatic value, that Staticall sets.
- * @method boolean|null getStaticallCallWasStatic() A method that returns the $staticallCallWasStatic value, that Staticall sets.
+ * @method static boolean|null getStaticallMethodCallWasStatic(bool $throwException = false) A method that returns Staticall's $this->staticallMethodCallWasStatic() value.
+ * @method boolean|null getStaticallMethodCallWasStatic(bool $throwException = false) A method that returns Staticall's $this->staticallMethodCallWasStatic() value.
+ * @method static boolean|null callNestedStaticallMethod(bool $recurseStatically, bool $throwException = false) A method that returns the current $this->staticallMethodCallWasStatic() value, along with the result from a nested call to another Staticall method.
+ * @method boolean|null callNestedStaticallMethod(bool $recurseStatically, bool $throwException = false) A method that returns the current $this->staticallMethodCallWasStatic() value, along with the result from a nested call to another Staticall method.
  *
  * @codingStandardsIgnoreEnd
  */
@@ -71,23 +74,65 @@ class TestClass4
 
 
 
+
+
     /**
-     * A method that returns the $staticallCallWasStatic value, that Staticall sets.
+     * A method that returns Staticall's $this->staticallMethodCallWasStatic() value.
      *
      * @return boolean|null
      */
-    private function staticallGetStaticallCallWasStatic()
+    public function getStaticallMethodCallWasStaticNow()
     {
-        return $this->staticallCallWasStatic();
+        return $this->staticallMethodCallWasStatic();
+    }
+
+
+
+
+
+    /**
+     * A method that returns Staticall's $this->staticallMethodCallWasStatic() value.
+     *
+     * @param boolean $throwException Whether to throw an exception or not.
+     * @return boolean|null
+     * @throws Exception When $throwException is true.
+     */
+    private function staticallGetStaticallMethodCallWasStatic(bool $throwException = false)
+    {
+        if ($throwException) {
+            throw new Exception();
+        }
+
+        return $this->staticallMethodCallWasStatic();
     }
 
     /**
-     * A method that returns the $staticallCallWasStatic value, that Staticall sets.
+     * A method that returns the current $this->staticallMethodCallWasStatic() value, along with the result from a
+     * nested call to another Staticall method.
      *
-     * @return boolean|null
+     * @param boolean $recurseStatically Whether to call the next Staticall method statically or not.
+     * @param boolean $throwException    Call a second Staticall method that throws an exception instead?.
+     *
+     * @return array<boolean|null>
      */
-    public function getStaticallCallWasStaticSeparately()
+    private function staticallCallNestedStaticallMethod(bool $recurseStatically, bool $throwException = false): array
     {
-        return $this->staticallCallWasStatic();
+        $a = $this->staticallMethodCallWasStatic(); // record the value that was set in the first place
+
+        try {
+            $b = $recurseStatically
+                ? static::getStaticallMethodCallWasStatic($throwException)  // call another Staticall method statically
+                : $this->getStaticallMethodCallWasStatic($throwException);  // or non-statically (* see below)
+            // * NOTE: this will always actually be called non-statically in the end because PHP is actually running
+            // THIS method in a non-static context (as Staticall creates an instance of this class, and then calls it
+            // non-statically) (see the *Caveat* section in README.md)
+        } catch (Exception $e) {
+            $b = null;
+        }
+
+        $c = $this->staticallMethodCallWasStatic(); // record the value that was returned back again after the nested
+                                                    // call
+
+        return [$a, $b, $c];
     }
 }

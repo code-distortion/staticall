@@ -12,7 +12,7 @@ use BadMethodCallException;
 trait Staticall
 {
     /** @var boolean|null A flag to indicate that the current "staticall*" method was called statically. */
-    private $staticallCallWasStatic = null;
+    private $staticallMethodCallWasStatic = null;
 
 
 
@@ -34,9 +34,17 @@ trait Staticall
             $callable = [$this, "staticall$method"];
             if (is_callable($callable)) {
 
-                $this->staticallCallWasStatic = false;
-                $return = call_user_func_array($callable, $parameters);
-                $this->staticallCallWasStatic = null;
+                // set the flag to indicate that this method was called statically
+                $prev = $this->staticallMethodCallWasStatic;
+                $this->staticallMethodCallWasStatic = false;
+
+                try {
+                    $return = call_user_func_array($callable, $parameters);
+                } finally {
+                    // replace the flag back again
+                    $this->staticallMethodCallWasStatic = $prev;
+                }
+
                 return $return;
             }
         }
@@ -71,9 +79,10 @@ trait Staticall
             $callable = [$new, "staticall$method"];
             if (is_callable($callable)) {
 
-                $new->staticallCallWasStatic = true;
-                $return = call_user_func_array($callable, $parameters);
-                return $return;
+                // set the flag to indicate that this method was called statically
+                $new->staticallMethodCallWasStatic = true;
+
+                return call_user_func_array($callable, $parameters);
             }
         }
 
@@ -94,8 +103,8 @@ trait Staticall
      *
      * @return boolean|null
      */
-    private function staticallCallWasStatic()
+    private function staticallMethodCallWasStatic()
     {
-        return $this->staticallCallWasStatic;
+        return $this->staticallMethodCallWasStatic;
     }
 }

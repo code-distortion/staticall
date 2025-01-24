@@ -67,7 +67,7 @@ MyEmail::attach('file.zip')->recipient('Bob', 'bob@test.com')->send();
 
 ### Detecting Static Calls
 
-If you'd like to check if your method was called statically, call the `$this->staticallCallWasStatic()` method.
+If you'd like to check if your method was called statically, call the `$this->staticallMethodCallWasStatic()` method.
 
 ```php
 use CodeDistortion\Staticall\Staticall;
@@ -78,9 +78,9 @@ class MyClass
 
     private function staticallMyMethod(): string
     {
-        return $this->staticallCallWasStatic() // <<<
+        return $this->staticallMethodCallWasStatic() // <<<
             ? 'called statically'
-            : 'not called statically';
+            : 'called non-statically';
     }
 }
 ```
@@ -91,6 +91,50 @@ MyClass::myMethod();   // 'called statically'
 $myObject = new MyClass();
 $myObject->myMethod(); // 'not called statically'
 ```
+
+
+
+### Caveats When Using Staticall
+
+#### Calling Nested Staticall Methods Statically
+
+Calling a method statically using Staticall is not quite the same as calling a true static method. The way you call it is the same, but behind the scenes it's a little different. Staticall instantiates a new instance of the class and calls the method non-statically. This means that the method is not actually running in a static context. If you call another Staticall method from within your method statically, it will actually be called non-statically.
+
+```php
+use CodeDistortion\Staticall\Staticall;
+
+class MyClass
+{
+    use Staticall;
+
+    private function staticallMyMethodA(): array
+    {
+        $calledStatically = $this->staticallMethodCallWasStatic()
+            ? 'called statically'
+            : 'called non-statically';
+
+        return [
+            'myMethodA' => $calledStatically,
+            'myMethodB' => $this->myMethodB(), // <<<
+        ];
+    }
+
+    private function staticallMyMethodB(): string
+    {
+        return $this->staticallMethodCallWasStatic()
+            ? 'called statically'
+            : 'called non-statically';
+    }
+}
+```
+
+```php
+MyClass::myMethodA();
+// [ 'myMethodA' => 'called statically',
+//   'myMethodB' => 'called non-statically' ]
+```
+
+To counteract this, you can proxy the call in another method in the same class that is actually static.
 
 
 

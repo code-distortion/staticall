@@ -5,10 +5,9 @@ namespace CodeDistortion\Staticall\Tests\Unit;
 use BadMethodCallException;
 use CodeDistortion\Staticall\Tests\PHPUnitTestCase;
 use CodeDistortion\Staticall\Tests\Unit\Support\TestClass1;
-use CodeDistortion\Staticall\Tests\Unit\Support\TestClass2;
-use CodeDistortion\Staticall\Tests\Unit\Support\TestClass3;
 use CodeDistortion\Staticall\Tests\Unit\Support\TestClass4;
 use PHPUnit\Framework\Attributes\Test;
+use Throwable;
 
 /**
  * Test the Staticall trait.
@@ -180,7 +179,7 @@ class StaticallUnitTest extends PHPUnitTestCase
     }
 
     /**
-     * Test that Staticall sets the $staticallCalledStatically property flag properly.
+     * Test that Staticall's $this->staticallMethodCallWasStatic() returns the correct value.
      *
      * @test
      *
@@ -189,17 +188,91 @@ class StaticallUnitTest extends PHPUnitTestCase
     #[Test]
     public static function test_that_staticall_called_statically_flag_is_set()
     {
-        self::assertSame(true, TestClass1::getStaticallCallWasStatic());
-        self::assertSame(true, TestClass4::getStaticallCallWasStatic());
+        // SINGLE Staticall calls
 
+        // static call
+        self::assertSame(true, TestClass1::getStaticallMethodCallWasStatic());
+        self::assertSame(true, TestClass4::getStaticallMethodCallWasStatic());
+
+        // non-static call
         $test = new TestClass1();
-        self::assertSame(null, $test->getStaticallCallWasStaticSeparately()); // started as null
-        self::assertSame(false, $test->getStaticallCallWasStatic());          // false while calling
-        self::assertSame(null, $test->getStaticallCallWasStaticSeparately()); // returned to null
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // started as null
+        self::assertSame(false, $test->getStaticallMethodCallWasStatic());   // false while calling
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // returned to null
         $test = new TestClass4();
-        self::assertSame(null, $test->getStaticallCallWasStaticSeparately());
-        self::assertSame(false, $test->getStaticallCallWasStatic());
-        self::assertSame(null, $test->getStaticallCallWasStaticSeparately());
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // started as null
+        self::assertSame(false, $test->getStaticallMethodCallWasStatic());   // false while calling
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // returned to null
+
+
+
+        // SINGLE Staticall calls - with an exception
+
+        // non-static call
+        $test = new TestClass1();
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // started as null
+        try {
+            $test->getStaticallMethodCallWasStatic(true);
+        } catch (Throwable $e) {
+        }
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // returned to null
+
+        $test = new TestClass4();
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // started as null
+        try {
+            $test->getStaticallMethodCallWasStatic(true);
+        } catch (Throwable $e) {
+        }
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // returned to null
+
+
+
+        // NESTED Staticall calls
+
+        // static call
+        self::assertSame([true, false, true], TestClass1::callNestedStaticallMethod(true)); // * see below
+        self::assertSame([true, false, true], TestClass1::callNestedStaticallMethod(false));
+        self::assertSame([true, false, true], TestClass4::callNestedStaticallMethod(true)); // * see below
+        self::assertSame([true, false, true], TestClass4::callNestedStaticallMethod(false));
+
+        // non-static call
+        $test = new TestClass1();
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // started as null
+        self::assertSame([false, false, false], $test->callNestedStaticallMethod(true)); // * see below
+        self::assertSame([false, false, false], $test->callNestedStaticallMethod(false));
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // returned to null
+        $test = new TestClass4();
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // started as null
+        self::assertSame([false, false, false], $test->callNestedStaticallMethod(true)); // * see below
+        self::assertSame([false, false, false], $test->callNestedStaticallMethod(false));
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // returned to null
+
+
+
+        // NESTED Staticall calls - with an exception
+
+        // static call
+        self::assertSame([true, null, true], TestClass1::callNestedStaticallMethod(true, true)); // * see below
+        self::assertSame([true, null, true], TestClass1::callNestedStaticallMethod(false, true));
+        self::assertSame([true, null, true], TestClass4::callNestedStaticallMethod(true, true)); // * see below
+        self::assertSame([true, null, true], TestClass4::callNestedStaticallMethod(false, true));
+
+        // non-static call
+        $test = new TestClass1();
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // started as null
+        self::assertSame([false, null, false], $test->callNestedStaticallMethod(true, true)); // * see below
+        self::assertSame([false, null, false], $test->callNestedStaticallMethod(false, true));
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // returned to null
+        $test = new TestClass4();
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // started as null
+        self::assertSame([false, null, false], $test->callNestedStaticallMethod(true, true)); // * see below
+        self::assertSame([false, null, false], $test->callNestedStaticallMethod(false, true));
+        self::assertSame(null, $test->getStaticallMethodCallWasStaticNow()); // returned to null
+
+
+
+        // * the second value is not true because the second call is actually made non-statically, because of how
+        // Staticall and PHP work (see the *Caveat* section in README.md)
     }
 
     /**
@@ -220,7 +293,7 @@ class StaticallUnitTest extends PHPUnitTestCase
         }
         self::assertInstanceOf(BadMethodCallException::class, $e);
         self::assertSame(
-            'Method "nonExistentMethod" does not exist in class CodeDistortion\Staticall\Tests\Unit\Support\TestClass1',
+            'Method "nonExistentMethod" does not exist in class CodeDistortion\\Staticall\\Tests\\Unit\\Support\\TestClass1',
             $e->getMessage()
         );
 
@@ -233,7 +306,7 @@ class StaticallUnitTest extends PHPUnitTestCase
         }
         self::assertInstanceOf(BadMethodCallException::class, $e);
         self::assertSame(
-            'Method "nonExistentMethod" does not exist in class CodeDistortion\Staticall\Tests\Unit\Support\TestClass1',
+            'Method "nonExistentMethod" does not exist in class CodeDistortion\\Staticall\\Tests\\Unit\\Support\\TestClass1',
             $e->getMessage()
         );
     }
